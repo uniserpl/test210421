@@ -96,8 +96,12 @@ class MergeRobot implements RobotInterface {
     
     public function addRobot($robots) {
         
-        settype($robots, 'array');
-        
+        if (!is_array($robots))
+            if ($robots instanceof RobotInterface)
+                $robots = [$robots];
+            else
+                throw new \Exception('Type mismatch. You can add only Robots');
+            
         [ $this->_height, $this->_speed, $this->_weight ] =
                 
             array_reduce($robots, function($carry, RobotInterface $robot){
@@ -128,8 +132,8 @@ $factory = new FactoryRobot();
 $factory->addType(new Robot1());
 $factory->addType(new Robot2());
 
-var_dump($factory->createRobot1(5));
-var_dump($factory->createRobot2(2));
+//var_dump($factory->createRobot1(5));
+//var_dump($factory->createRobot2(2));
 
 $mergeRobot = new MergeRobot();
 $mergeRobot ->addRobot(new Robot2());
