@@ -2,7 +2,7 @@
 
 /** 
  * @author Uniser <uniserpl@gmail.com>
- * @since 2021.04.21 13:36 — 
+ * @since 2021.04.21 13:36 — 14:38
  */
 
 /**
@@ -10,13 +10,17 @@
  */
 interface RobotInterface {
     
-    public function getWeight();
+    public function getHeight();
     
     public function getSpeed();
     
-    public function getHeight();
+    public function getWeight();
 }
 
+/**
+ * Простой робот
+ * 
+ */
 class Robot1 implements RobotInterface {
     
     public function getHeight() {
@@ -48,11 +52,19 @@ class Robot2 implements RobotInterface {
 }
 
 
-
+/**
+ * Фабрика роботов
+ */
 class FactoryRobot {
     
     private $_robots = [];
     
+    /**
+     * Добавление нового робота в коллекцию фабрики
+     * 
+     * @param RobotInterface $robot
+     * @throws \Exception
+     */
     public function addType(RobotInterface $robot) {
         
         // Слеши в неймспейсах меняем на подчёркивания, чтобы класс робота был доступен через __call
@@ -66,6 +78,13 @@ class FactoryRobot {
         $this->_robots[$class] = $robot;
     }
     
+    /**
+     * 
+     * @param string $function
+     * @param array $args
+     * @return RobotInterface
+     * @throws \Exception
+     */
     public function __call($function, $args) {
         
         if ( ! (substr($function,0,6)==='create' && count($args)===1 && is_int($args[0]) && $args[0]>0)) {
@@ -87,6 +106,10 @@ class FactoryRobot {
         
 }
 
+/**
+ * Робот рснованный на объединении нескольких простых
+ * 
+ */
 class MergeRobot implements RobotInterface {
     
     // Накопители информации о добавленных роботах
@@ -94,6 +117,12 @@ class MergeRobot implements RobotInterface {
     private $_speed  = INF; //PHP_FLOAT_MAX;
     private $_weight = 0.0;
     
+    /**
+     * Объединение роботов
+     * 
+     * @param RobotInterface|RobotInterface[] $robots
+     * @throws \Exception
+     */
     public function addRobot($robots) {
         
         if (!is_array($robots))
